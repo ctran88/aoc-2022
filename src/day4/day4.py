@@ -8,8 +8,8 @@ def parse_file() -> List[List[str]]:
     return [line.split(",") for line in lines]
 
 
-def get_subsets(assignment_pairs: List[List[str]]) -> List[List[Set[int]]]:
-    subsets = []
+def get_assignment_sets(assignment_pairs: List[List[str]]) -> List[List[Set[int]]]:
+    sets = []
 
     for pair in assignment_pairs:
         first, second = pair
@@ -20,15 +20,23 @@ def get_subsets(assignment_pairs: List[List[str]]) -> List[List[Set[int]]]:
         first_set = set(range(int(first_split[0]), int(first_split[1]) + 1))
         second_set = set(range(int(second_split[0]), int(second_split[1]) + 1))
 
-        is_subset = first_set.issubset(second_set) or second_set.issubset(first_set)
-        if is_subset:
-            subsets.append([first_set, second_set])
+        sets.append([first_set, second_set])
 
-    return subsets
+    return sets
 
+
+def get_subset_count(assignment_sets: List[List[Set[int]]]) -> int:
+    return len([assignments for assignments in assignment_sets if assignments[0].issubset(assignments[1]) or assignments[1].issubset(assignments[0])])
+
+
+def get_intersection_count(assignment_sets: List[List[Set[int]]]) -> int:
+    return len([assignments for assignments in assignment_sets if len(assignments[0].intersection(assignments[1]))])
 
 if __name__ == "__main__":
     assignment_pairs = parse_file()
-    subsets = get_subsets(assignment_pairs)
-    subset_count = len(subsets)
+    assignment_sets = get_assignment_sets(assignment_pairs)
+    subset_count = get_subset_count(assignment_sets)
     print(subset_count)
+
+    intersection_count = get_intersection_count(assignment_sets)
+    print(intersection_count)
